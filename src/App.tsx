@@ -1,9 +1,11 @@
-import { PokemonList } from "./screens/PokemonList"
+import { PokemonDetails } from "./screens/PokemonDetails"
+// import { PokemonList } from "./screens/PokemonList"
 
 export const App = () => {
   return (
     <div>
-      <PokemonList />
+      {/* <PokemonList /> */}
+      <PokemonDetails />
     </div>
   )
 }
