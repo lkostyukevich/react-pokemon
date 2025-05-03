@@ -1,21 +1,21 @@
-import './style.css';
-import { Header } from '../../components/Header';
-import removeIcon from '../../assets/pokemonList/remove.svg';
+import './style.css'
+import { Header } from '../../components/Header'
+import removeIcon from '../../assets/pokemonList/remove.svg'
 
 const mockData = [
   {
     name: 'Bulbasaur',
     height: 7,
     weight: 69,
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png',
+    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png'
   },
   {
     name: 'Charmander',
     height: 6,
     weight: 85,
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png',
-  },
-];
+    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png'
+  }
+]
 
 export const PokemonComparison = () => {
   return (
@@ -50,5 +50,5 @@ export const PokemonComparison = () => {
         </div>
       </main>
     </div>
-  );
-};
+  )
+}

@@ -34,7 +34,7 @@ export const PokemonDetails = () => {
           </div>
 
           <div className="right_section">
-            <div className="pokemon_actions">
+            <div className="pokemon_actions_details">
               <button className="icon_button" title="Add to favorites">
                 <img src={favorites} alt="Favorite" />
               </button>

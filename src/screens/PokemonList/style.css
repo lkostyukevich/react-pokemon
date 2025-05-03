@@ -7,100 +7,12 @@ body,
   scroll-behavior: smooth;
 }
 
-body {
-  font-family: 'Montserrat', sans-serif;
+.container {
   background: linear-gradient(to right, #6e00ff, #2d0a4b, #000014);
   background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
   color: white;
-}
-
-.container {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* header styles */
-
-.header {
-  width: 100%;
-  padding: 0;
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  background: linear-gradient(
-    to right,
-    rgba(110, 0, 255, 0.8),
-    rgba(45, 10, 75, 0.8),
-    rgba(0, 0, 20, 0.8)
-  );
-  z-index: 10;
-}
-
-.header_container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 20px;
-  width: 100%;
-}
-
-.header_logo_img {
-  width: 100px;
-  height: auto;
-}
-
-.header_menu ul {
-  display: flex;
-  gap: 40px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.header_menu a {
-  text-decoration: none;
-  color: white;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 1px;
-  padding: 10px 15px;
-  border: 2px solid transparent;
-  border-radius: 9999px;
-  transition: border-color 0.3s ease;
-}
-
-.header_menu a:hover {
-  border-color: #fff;
-}
-
-.header_dots {
-  display: flex;
-  gap: 10px;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-.pink {
-  background-color: #ff7ce5;
-}
-
-.yellow {
-  background-color: #fff685;
-}
-
-.purple {
-  background-color: #ad7cff;
+  font-family: 'Montserrat', sans-serif;
 }
 
 /* main styles */
@@ -284,4 +196,8 @@ body {
 .page_number {
   font-size: 1rem;
   font-weight: bold;
+}
+
+.pokemon_card_link {
+  text-decoration: none;
 }

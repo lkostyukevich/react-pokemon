@@ -1,8 +1,9 @@
 import './style.css'
-import logo from '../../assets/pokemonList/pokemon-logo.svg'
+import { Header } from '../../components/Header'
 import favorites from '../../assets/pokemonList/favorites-icon.svg'
 import picture from '../../assets/pokemonList/main-picture.png'
 import comparison from '../../assets/pokemonList/comparison-icon.svg'
+import { Link } from 'react-router-dom'
 
 const mockData = [
   {
@@ -25,28 +26,7 @@ const mockData = [
 export const PokemonList = () => {
   return (
     <div className="container">
-      <header className="header">
-        <div className="header_container">
-          <div className="header_logo">
-            <img src={logo} alt="Pokemon" className="header_logo_img" />
-          </div>
-          <nav className="header_menu">
-            <ul>
-              <li>
-                <a href="#">FAVORITES</a>
-              </li>
-              <li>
-                <a href="#">COMPARISON</a>
-              </li>
-            </ul>
-          </nav>
-          <div className="header_dots">
-            <span className="dot pink"></span>
-            <span className="dot yellow"></span>
-            <span className="dot purple"></span>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <section className="main_content">
         <div className="main_container">
@@ -64,26 +44,28 @@ export const PokemonList = () => {
         <h2 className="list_title">Featured Pokémons</h2>
         <div className="pokemon_vertical_list">
           {mockData.map((pokemon) => (
-            <div
+            <Link
+              to={`/details/${pokemon.index}`}
               key={pokemon.index}
-              className="pokemon_card"
-              onClick={() => console.log('Clicked:', pokemon.name)}>
-              <div className="pokemon_info">
-                <img src={pokemon.image} alt={pokemon.name} className="pokemon_image" />
-                <div className="pokemon_text">
-                  <span className="pokemon_number">#{pokemon.index}</span>
-                  <h4 className="pokemon_name">{pokemon.name}</h4>
+              className="pokemon_card_link">
+              <div className="pokemon_card">
+                <div className="pokemon_info">
+                  <img src={pokemon.image} alt={pokemon.name} className="pokemon_image" />
+                  <div className="pokemon_text">
+                    <span className="pokemon_number">#{pokemon.index}</span>
+                    <h4 className="pokemon_name">{pokemon.name}</h4>
+                  </div>
+                </div>
+                <div className="pokemon_actions">
+                  <button className="icon_button" title="Add to favorites">
+                    <img src={favorites} alt="Favorite" />
+                  </button>
+                  <button className="icon_button" title="Add to comparison">
+                    <img src={comparison} className="comparison" alt="Compare" />
+                  </button>
                 </div>
               </div>
-              <div className="pokemon_actions">
-                <button className="icon_button" title="Add to favorites">
-                  <img src={favorites} alt="Favorite" />
-                </button>
-                <button className="icon_button" title="Add to comparison">
-                  <img src={comparison} className="comparison" alt="Compare" />
-                </button>
-              </div>
-            </div>
+            </Link>
           ))}
         </div>
 
