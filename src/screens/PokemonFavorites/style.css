@@ -28,7 +28,11 @@ body,
   align-items: center;
 }
 
-.pokemon_card {
+.pokemon_card_link_fav {
+  text-decoration: none;
+}
+
+.pokemon_card_fav {
   background: radial-gradient(circle at top left, #3a006a, #1e0038);
   border-radius: 20px;
   padding: 20px;
@@ -41,7 +45,7 @@ body,
   width: 600px;
 }
 
-.pokemon_card:hover {
+.pokemon_card_fav:hover {
   transform: translateY(-5px);
 }
 
