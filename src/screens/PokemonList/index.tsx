@@ -4,26 +4,27 @@ import favorites from '../../assets/pokemonList/favorites-icon.svg'
 import picture from '../../assets/pokemonList/main-picture.png'
 import comparison from '../../assets/pokemonList/comparison-icon.svg'
 import { Link } from 'react-router-dom'
-
-const mockData = [
-  {
-    index: 0,
-    name: 'Bulbasaur',
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png'
-  },
-  {
-    index: 1,
-    name: 'Charmander',
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png'
-  },
-  {
-    index: 2,
-    name: 'Squirtle',
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png'
-  }
-]
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { getPokemonsListThunk } from '../../store/pokemons/slice'
+import { AppDispatch, RootState } from '../../store'
+import Skeleton from './Skeleton'
 
 export const PokemonList = () => {
+  const { pokemons, isLoading, error, currentPage } = useSelector(
+    (state: RootState) => state.pokemons
+  )
+  const dispatch = useDispatch<AppDispatch>()
+
+  useEffect(() => {
+    dispatch(getPokemonsListThunk('https://pokeapi.co/api/v2/pokemon'))
+  }, [dispatch])
+
+  const getPokemonId = (url: string) => {
+    const parts = url.split('/').filter(Boolean)
+    return parts[parts.length - 1]
+  }
+
   return (
     <div className="container">
       <Header />
@@ -43,38 +44,58 @@ export const PokemonList = () => {
       <section className="vertical_list_section" id="pokemons">
         <h2 className="list_title">Featured Pokémons</h2>
         <div className="pokemon_vertical_list">
-          {mockData.map((pokemon) => (
-            <Link
-              to={`/details/${pokemon.index}`}
-              key={pokemon.index}
-              className="pokemon_card_link">
-              <div className="pokemon_card">
-                <div className="pokemon_info">
-                  <img src={pokemon.image} alt={pokemon.name} className="pokemon_image" />
-                  <div className="pokemon_text">
-                    <span className="pokemon_number">#{pokemon.index}</span>
-                    <h4 className="pokemon_name">{pokemon.name}</h4>
+          {isLoading ? (
+            <Skeleton />
+          ) : error ? (
+            <div className="error_message">Error: {error}</div>
+          ) : (
+            pokemons.results.map((pokemon) => {
+              const pokemonId = getPokemonId(pokemon.url)
+              return (
+                <Link to={`/details/${pokemonId}`} key={pokemonId} className="pokemon_card_link">
+                  <div className="pokemon_card">
+                    <div className="pokemon_info">
+                      <img
+                        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`}
+                        alt={pokemon.name}
+                        className="pokemon_image"
+                      />
+                      <div className="pokemon_text">
+                        <span className="pokemon_number">#{pokemonId}</span>
+                        <h4 className="pokemon_name">{pokemon.name}</h4>
+                      </div>
+                    </div>
+                    <div className="pokemon_actions">
+                      <button className="icon_button" title="Add to favorites">
+                        <img src={favorites} alt="Favorite" />
+                      </button>
+                      <button className="icon_button" title="Add to comparison">
+                        <img src={comparison} className="comparison" alt="Compare" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <div className="pokemon_actions">
-                  <button className="icon_button" title="Add to favorites">
-                    <img src={favorites} alt="Favorite" />
-                  </button>
-                  <button className="icon_button" title="Add to comparison">
-                    <img src={comparison} className="comparison" alt="Compare" />
-                  </button>
-                </div>
-              </div>
-            </Link>
-          ))}
+                </Link>
+              )
+            })
+          )}
         </div>
 
         <div className="pagination">
-          <button className="pagination_button" disabled>
+          <button
+            className="pagination_button"
+            onClick={() => dispatch(getPokemonsListThunk(pokemons.previous))}
+            disabled={!pokemons.previous || isLoading}>
             Previous
           </button>
-          <span className="page_number">Page 1</span>
-          <button className="pagination_button">Next</button>
+          <span className="page_number">
+            Page {currentPage} / {Math.ceil(pokemons.count / 20) || 1}
+          </span>
+          <button
+            className="pagination_button"
+            onClick={() => dispatch(getPokemonsListThunk(pokemons.next))}
+            disabled={!pokemons.next || isLoading}>
+            Next
+          </button>
         </div>
       </section>
     </div>
