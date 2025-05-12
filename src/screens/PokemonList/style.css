@@ -148,6 +148,10 @@ body,
   color: white;
 }
 
+.pokemon_name:first-letter {
+  text-transform: uppercase;
+}
+
 .pokemon_actions {
   display: flex;
   gap: 15px;
@@ -193,6 +197,17 @@ body,
   color: #2d0a4b;
 }
 
+.pagination_button:disabled {
+  color: #8d8d8d;
+  border: 2px solid #8d8d8d;
+  cursor: not-allowed;
+  padding: 8px 16px;
+}
+
+.pagination_button:disabled:hover {
+  background: none;
+}
+
 .page_number {
   font-size: 1rem;
   font-weight: bold;
@@ -200,4 +215,10 @@ body,
 
 .pokemon_card_link {
   text-decoration: none;
+}
+
+.error_message {
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
 }
