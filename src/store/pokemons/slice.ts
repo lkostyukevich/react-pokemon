@@ -7,6 +7,16 @@ type PokemonsState = {
     previous: string
     results: Pokemon[]
   }
+  pokemonDetails: {
+    details: {
+      name: string
+      height: number
+      weight: number
+      stats: Stat[]
+    }
+    isLoading: boolean
+    error: string
+  }
   isLoading: boolean
   error: string
   currentPage: number
@@ -19,6 +29,16 @@ const initialState: PokemonsState = {
     previous: '',
     results: []
   },
+  pokemonDetails: {
+    details: {
+      name: '',
+      height: 0,
+      weight: 0,
+      stats: []
+    },
+    isLoading: false,
+    error: ''
+  },
   isLoading: false,
   error: '',
   currentPage: 1
@@ -28,6 +48,30 @@ type Pokemon = {
   name: string
   url: string
 }
+
+type Stat = {
+  name: string
+  value: number
+}
+
+export const getPokemonDetailsThunk = createAsyncThunk(
+  'getPokemonDetailsThunk',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch')
+      }
+      const data = await response.json()
+      return data
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message)
+      }
+      return rejectWithValue('An unknown error occurred')
+    }
+  }
+)
 
 export const getPokemonsListThunk = createAsyncThunk(
   'getPokemonsListThunk',
@@ -60,6 +104,12 @@ const pokemonsSlice = createSlice({
     },
     setPokemons(state, action) {
       state.pokemons = action.payload
+    },
+    setPokemonDetailsLoading(state, action) {
+      state.pokemonDetails.isLoading = action.payload
+    },
+    setPokemonDetails(state, action) {
+      state.pokemonDetails = action.payload
     }
   },
   extraReducers(builder) {
@@ -88,9 +138,31 @@ const pokemonsSlice = createSlice({
       state.isLoading = false
       state.error = action.payload as string
     })
+    builder.addCase(getPokemonDetailsThunk.pending, (state) => {
+      state.pokemonDetails.isLoading = true
+      state.pokemonDetails.error = ''
+    })
+    builder.addCase(getPokemonDetailsThunk.fulfilled, (state, action) => {
+      const pokemonData = action.payload
+      state.pokemonDetails.details = {
+        name: pokemonData.name,
+        height: pokemonData.height,
+        weight: pokemonData.weight,
+        stats: pokemonData.stats.map((stat: { stat: { name: string }; base_stat: number }) => ({
+          name: stat.stat.name,
+          value: stat.base_stat
+        }))
+      }
+      state.pokemonDetails.isLoading = false
+    })
+    builder.addCase(getPokemonDetailsThunk.rejected, (state, action) => {
+      state.pokemonDetails.isLoading = false
+      state.pokemonDetails.error = action.payload as string
+    })
   }
 })
 
-export const { setLoading, setPokemons } = pokemonsSlice.actions
+export const { setLoading, setPokemons, setPokemonDetailsLoading, setPokemonDetails } =
+  pokemonsSlice.actions
 
 export default pokemonsSlice.reducer
