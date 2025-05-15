@@ -53,6 +53,10 @@
   border-color: #fff;
 }
 
+.header_menu a.active {
+  border-color: #fff;
+}
+
 .header_dots {
   display: flex;
   gap: 10px;
