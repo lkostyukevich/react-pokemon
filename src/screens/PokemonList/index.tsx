@@ -1,6 +1,7 @@
 import './style.css'
 import { Header } from '../../components/Header'
-import favorites from '../../assets/pokemonList/favorites-icon.svg'
+import favorites_unselected from '../../assets/pokemonList/favorites-icon.svg'
+import favorites_selected from '../../assets/pokemonList/favorites_selected.svg'
 import picture from '../../assets/pokemonList/main-picture.png'
 import comparison from '../../assets/pokemonList/comparison-icon.svg'
 import { Link } from 'react-router-dom'
@@ -9,11 +10,14 @@ import { useEffect } from 'react'
 import { getPokemonsListThunk } from '../../store/pokemons/slice'
 import { AppDispatch, RootState } from '../../store'
 import Skeleton from './Skeleton'
+import { addFavoritePokemon, removeFavoritePokemon } from '../../store/favorites/slice'
 
 export const PokemonList = () => {
   const { pokemons, isLoading, error, currentPage } = useSelector(
     (state: RootState) => state.pokemons
   )
+  const { favorites } = useSelector((state: RootState) => state.favorites)
+
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
@@ -51,6 +55,7 @@ export const PokemonList = () => {
           ) : (
             pokemons.results.map((pokemon) => {
               const pokemonId = getPokemonId(pokemon.url)
+              const isFavorite = favorites.some((fav) => fav.name === pokemon.name)
               return (
                 <Link to={`/details/${pokemonId}`} key={pokemonId} className="pokemon_card_link">
                   <div className="pokemon_card">
@@ -66,8 +71,21 @@ export const PokemonList = () => {
                       </div>
                     </div>
                     <div className="pokemon_actions">
-                      <button className="icon_button" title="Add to favorites">
-                        <img src={favorites} alt="Favorite" />
+                      <button
+                        className="icon_button"
+                        title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          dispatch(
+                            isFavorite
+                              ? removeFavoritePokemon(pokemon)
+                              : addFavoritePokemon(pokemon)
+                          )
+                        }}>
+                        <img
+                          src={isFavorite ? favorites_selected : favorites_unselected}
+                          alt={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                        />
                       </button>
                       <button className="icon_button" title="Add to comparison">
                         <img src={comparison} className="comparison" alt="Compare" />

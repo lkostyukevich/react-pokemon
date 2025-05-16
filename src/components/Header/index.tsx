@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import logo from '../../assets/pokemonList/pokemon-logo.svg'
 import './style.css'
 
@@ -12,10 +12,14 @@ export const Header = () => {
         <nav className="header_menu">
           <ul>
             <li>
-              <Link to={'/favorites'}>FAVORITES</Link>
+              <NavLink className={({ isActive }) => (isActive ? 'active' : '')} to={'/favorites'}>
+                FAVORITES
+              </NavLink>
             </li>
             <li>
-              <Link to={'/comparison'}>COMPARISON</Link>
+              <NavLink className={({ isActive }) => (isActive ? 'active' : '')} to={'/comparison'}>
+                COMPARISON
+              </NavLink>
             </li>
           </ul>
         </nav>
