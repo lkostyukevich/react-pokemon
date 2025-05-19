@@ -105,4 +105,12 @@ body {
   color: #fff;
   font-weight: 700;
   font-size: 1.3rem;
+  text-transform: capitalize;
+}
+
+.empty_comparison_message {
+  text-align: center;
+  padding: 20px;
+  font-size: 20px;
+  margin-top: 70px;
 }
