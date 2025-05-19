@@ -1,24 +1,41 @@
 import './style.css'
 import favorites_unselected from '../../assets/pokemonList/favorites-icon.svg'
 import favorites_selected from '../../assets/pokemonList/favorites_selected.svg'
-import comparison from '../../assets/pokemonList/comparison-icon.svg'
+import comparison_icon from '../../assets/pokemonList/comparison-icon.svg'
 import { Header } from '../../components/Header'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../store'
 import { useParams } from 'react-router-dom'
 import { getPokemonDetailsThunk } from '../../store/pokemons/slice'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { addFavoritePokemon, removeFavoritePokemon } from '../../store/favorites/slice'
+import {
+  addComparisonPokemon,
+  clearComparisonError,
+  removeComparisonPokemon
+} from '../../store/comparison/slice'
+import { Toast } from '../../components/Toast'
 
 export const PokemonDetails = () => {
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
   const { pokemonId } = useParams<{ pokemonId: string }>()
   const dispatch = useDispatch<AppDispatch>()
   const { pokemonDetails } = useSelector((state: RootState) => state.pokemons)
   const { favorites } = useSelector((state: RootState) => state.favorites)
+  const { comparison, errorComparison } = useSelector((state: RootState) => state.comparison)
 
   useEffect(() => {
     if (pokemonId) dispatch(getPokemonDetailsThunk(pokemonId))
   }, [dispatch, pokemonId])
+
+  useEffect(() => {
+    if (errorComparison) {
+      setToastMessage(errorComparison)
+      setTimeout(() => {
+        dispatch(clearComparisonError())
+      }, 2000)
+    }
+  }, [errorComparison, dispatch])
 
   const pokemon = {
     name: pokemonDetails.details.name,
@@ -26,9 +43,11 @@ export const PokemonDetails = () => {
   }
 
   const isFavorite = favorites.some((fav) => fav.name === pokemon.name)
+  const isCompared = comparison.some((comp) => comp.name === pokemon.name)
 
   return (
     <div className="details_page_container">
+      {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage(null)} />}
       <Header />
       <main className="details_main_content">
         {pokemonDetails.isLoading ? (
@@ -70,8 +89,20 @@ export const PokemonDetails = () => {
                     alt={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                   />
                 </button>
-                <button className="icon_button" title="Add to comparison">
-                  <img src={comparison} className="comparison" alt="Compare" />
+                <button
+                  className={isCompared ? 'icon_button_selected' : 'icon_button'}
+                  title={isCompared ? 'Remove from comparison' : 'Add to comparison'}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    dispatch(
+                      isCompared ? removeComparisonPokemon(pokemon) : addComparisonPokemon(pokemon)
+                    )
+                  }}>
+                  <img
+                    src={comparison_icon}
+                    className="comparison"
+                    alt={isCompared ? 'Remove from comparison' : 'Add to comparison'}
+                  />
                 </button>
               </div>
               <h2>Stats</h2>
