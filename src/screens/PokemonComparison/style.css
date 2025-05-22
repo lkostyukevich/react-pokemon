@@ -59,10 +59,10 @@ body {
   width: 20px;
   height: 20px;
 }
-
+/* 
 .remove_button:hover {
   transform: scale(1.2);
-}
+} */
 
 .pokemon_image_centered {
   display: flex;

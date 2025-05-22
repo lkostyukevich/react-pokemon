@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../store'
 import { getPokemonComparisonThunk, removeComparisonPokemon } from '../../store/comparison/slice'
 import { useEffect } from 'react'
+import { motion } from 'motion/react'
 
 export const PokemonComparison = () => {
   const { comparison } = useSelector((state: RootState) => state.comparison)
@@ -34,14 +35,15 @@ export const PokemonComparison = () => {
               const pokemonId = getPokemonId(pokemon.url)
               return (
                 <div key={pokemonId} className="comparison_card">
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.2 }}
                     className="remove_button"
                     onClick={() => {
                       dispatch(removeComparisonPokemon(pokemon))
                     }}
                     title="Remove from comparison">
                     <img src={removeIcon} alt="Remove" />
-                  </button>
+                  </motion.button>
                   <div className="pokemon_image_centered">
                     <img
                       src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`}
