@@ -109,10 +109,10 @@ body,
   cursor: pointer;
   width: 600px;
 }
-
+/* 
 .pokemon_card:hover {
   transform: translateY(-5px);
-}
+} */
 
 .pokemon_info {
   display: flex;

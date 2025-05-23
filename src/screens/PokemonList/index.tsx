@@ -7,7 +7,6 @@ import comparison_icon from '../../assets/pokemonList/comparison-icon.svg'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { getPokemonsListThunk } from '../../store/pokemons/slice'
 import { AppDispatch, RootState } from '../../store'
 import Skeleton from './Skeleton'
 import { addFavoritePokemon, removeFavoritePokemon } from '../../store/favorites/slice'
@@ -17,19 +16,17 @@ import {
   removeComparisonPokemon
 } from '../../store/comparison/slice'
 import { Toast } from '../../components/Toast'
+import { motion } from 'motion/react'
+import { useGetPokemonsListQuery } from '../../services/pokemonApi'
 
 export const PokemonList = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null)
-  const { pokemons, isLoading, error, currentPage } = useSelector(
-    (state: RootState) => state.pokemons
-  )
+  const [currentUrl, setCurrentUrl] = useState('https://pokeapi.co/api/v2/pokemon')
   const { favorites } = useSelector((state: RootState) => state.favorites)
   const { comparison, errorComparison } = useSelector((state: RootState) => state.comparison)
   const dispatch = useDispatch<AppDispatch>()
 
-  useEffect(() => {
-    dispatch(getPokemonsListThunk('https://pokeapi.co/api/v2/pokemon'))
-  }, [dispatch])
+  const { data: pokemons, isLoading, error } = useGetPokemonsListQuery(currentUrl)
 
   useEffect(() => {
     if (errorComparison) {
@@ -43,6 +40,16 @@ export const PokemonList = () => {
   const getPokemonId = (url: string) => {
     const parts = url.split('/').filter(Boolean)
     return parts[parts.length - 1]
+  }
+
+  const getCurrentPage = (url: string) => {
+    try {
+      const u = new URL(url)
+      const offset = parseInt(u.searchParams.get('offset') || '0', 10)
+      return Math.floor(offset / 20) + 1
+    } catch {
+      return 1
+    }
   }
 
   return (
@@ -68,15 +75,15 @@ export const PokemonList = () => {
           {isLoading ? (
             <Skeleton />
           ) : error ? (
-            <div className="error_message">Error: {error}</div>
+            <div className="error_message">Error: Failed to fetch Pokémons</div>
           ) : (
-            pokemons.results.map((pokemon) => {
+            pokemons?.results.map((pokemon) => {
               const pokemonId = getPokemonId(pokemon.url)
               const isFavorite = favorites.some((fav) => fav.name === pokemon.name)
               const isCompared = comparison.some((comp) => comp.name === pokemon.name)
               return (
                 <Link to={`/details/${pokemonId}`} key={pokemonId} className="pokemon_card_link">
-                  <div className="pokemon_card">
+                  <motion.div whileHover={{ translateY: -5 }} className="pokemon_card">
                     <div className="pokemon_info">
                       <img
                         src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`}
@@ -123,7 +130,7 @@ export const PokemonList = () => {
                         />
                       </button>
                     </div>
-                  </div>
+                  </motion.div>
                 </Link>
               )
             })
@@ -133,17 +140,17 @@ export const PokemonList = () => {
         <div className="pagination">
           <button
             className="pagination_button"
-            onClick={() => dispatch(getPokemonsListThunk(pokemons.previous))}
-            disabled={!pokemons.previous || isLoading}>
+            onClick={() => setCurrentUrl(pokemons?.previous || '')}
+            disabled={!pokemons?.previous || isLoading}>
             Previous
           </button>
           <span className="page_number">
-            Page {currentPage} / {Math.ceil(pokemons.count / 20) || 1}
+            Page {getCurrentPage(currentUrl)} / {Math.ceil((pokemons?.count ?? 0) / 20) || 1}
           </span>
           <button
             className="pagination_button"
-            onClick={() => dispatch(getPokemonsListThunk(pokemons.next))}
-            disabled={!pokemons.next || isLoading}>
+            onClick={() => setCurrentUrl(pokemons?.next || '')}
+            disabled={!pokemons?.next || isLoading}>
             Next
           </button>
         </div>
