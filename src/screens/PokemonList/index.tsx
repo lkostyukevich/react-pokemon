@@ -18,6 +18,7 @@ import {
 import { Toast } from '../../components/Toast'
 import { motion } from 'motion/react'
 import { useGetPokemonsListQuery } from '../../services/pokemonApi'
+import { getCurrentPage, getPokemonId } from '../../utils'
 
 export const PokemonList = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null)
@@ -36,21 +37,6 @@ export const PokemonList = () => {
       }, 2000)
     }
   }, [errorComparison, dispatch])
-
-  const getPokemonId = (url: string) => {
-    const parts = url.split('/').filter(Boolean)
-    return parts[parts.length - 1]
-  }
-
-  const getCurrentPage = (url: string) => {
-    try {
-      const u = new URL(url)
-      const offset = parseInt(u.searchParams.get('offset') || '0', 10)
-      return Math.floor(offset / 20) + 1
-    } catch {
-      return 1
-    }
-  }
 
   return (
     <div className="container">

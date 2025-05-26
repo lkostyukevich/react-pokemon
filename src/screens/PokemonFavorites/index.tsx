@@ -13,17 +13,13 @@ import {
 } from '../../store/comparison/slice'
 import { useEffect, useState } from 'react'
 import { Toast } from '../../components/Toast'
+import { getPokemonId } from '../../utils'
 
 export const PokemonFavorites = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const { favorites } = useSelector((state: RootState) => state.favorites)
   const { comparison, errorComparison } = useSelector((state: RootState) => state.comparison)
   const dispatch = useDispatch<AppDispatch>()
-
-  const getPokemonId = (url: string) => {
-    const parts = url.split('/').filter(Boolean)
-    return parts[parts.length - 1]
-  }
 
   useEffect(() => {
     if (errorComparison) {
