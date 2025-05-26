@@ -6,6 +6,7 @@ import { AppDispatch, RootState } from '../../store'
 import { getPokemonComparisonThunk, removeComparisonPokemon } from '../../store/comparison/slice'
 import { useEffect } from 'react'
 import { motion } from 'motion/react'
+import { getPokemonId } from '../../utils'
 
 export const PokemonComparison = () => {
   const { comparison } = useSelector((state: RootState) => state.comparison)
@@ -19,11 +20,6 @@ export const PokemonComparison = () => {
       }
     })
   }, [comparison, dispatch])
-
-  const getPokemonId = (url: string) => {
-    const parts = url.split('/').filter(Boolean)
-    return parts[parts.length - 1]
-  }
 
   return (
     <div className="comparison_page_container">
